@@ -397,3 +397,33 @@ body.debug .e-sensor { background: rgba(0,200,255,.1); }
 .go-sub { margin: 8px 0 6px; font-size: 15px; line-height: 1.5; color: #ddd; }
 .go-yes { padding: 12px; border-radius: 8px !important; background: #c0102c; color: #fff; font-weight: 800; font-size: 16px; }
 .go-no { background: none; color: #999; font-size: 12px; text-decoration: underline; }
+
+/* ---------- hosszú üzenetek és zenekérdés ---------- */
+.c-bubble span { display: block; overflow: hidden; text-overflow: ellipsis; }
+.c-bubble.long { padding-top: 3px; white-space: normal; }
+.c-bubble.long small { margin-bottom: 0; }
+.c-bubble.long span { font-size: 11px; line-height: 1.13; max-height: 25px; }
+.music-ask { width: 380px; }
+.ma-icon { font-size: 42px; }
+.ma-title { font: 800 22px system-ui, sans-serif; }
+.ma-sub { margin: 4px 0 10px; font-size: 13px; color: #666; }
+.ma-yes { padding: 12px; border-radius: 8px !important; background: #1bb55c; color: #fff; font-weight: 800; font-size: 16px; }
+.ma-no { padding: 10px; border-radius: 8px !important; background: #eee; color: #444; font-weight: 700; font-size: 14px; }
+
+/* ---------- hamis Discord-hívás ---------- */
+.dcall {
+  position: absolute; left: 560px; top: 70px; width: 300px; height: 230px; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; padding-top: 22px;
+  background: #313338; color: #f2f3f5; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  font-family: "gg sans", "Segoe UI", system-ui, sans-serif;
+}
+.dc-avatar { position: relative; width: 84px; height: 84px; border-radius: 50%; background: #5865f2; display: flex; align-items: center; justify-content: center; }
+.dc-avatar span { font: 800 38px system-ui, sans-serif; color: #fff; }
+.dc-avatar::after { content: ""; position: absolute; inset: -6px; border: 3px solid #23a55a; border-radius: 50%; animation: ringpulse 1s ease-out infinite; }
+.dcall.ended .dc-avatar::after { display: none; }
+@keyframes ringpulse { from { transform: scale(.95); opacity: 1; } to { transform: scale(1.25); opacity: 0; } }
+.dc-name { margin-top: 12px; font-weight: 800; font-size: 19px; }
+.dc-sub { margin-top: 3px; font-size: 13px; color: #b5bac1; }
+.dc-btn { width: 52px; height: 52px; border: 0; border-radius: 50%; color: #fff; font-size: 22px; }
+.dc-accept { position: absolute; left: 70px; bottom: 16px; background: #23a55a; }
+.dc-decline { position: absolute; z-index: 3; background: #da373c; transform: rotate(135deg); transition: left .1s, top .1s; }

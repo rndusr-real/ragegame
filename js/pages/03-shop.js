@@ -65,6 +65,13 @@
         })
       ];
 
+      if (!G.flags.call) {
+        list.push(E.zone(1470, function () {
+          G.flags.call = true;
+          RG.ui.fakeCall('VörÖske');
+        }));
+      }
+
       if (!G.flags.captcha) {
         list.push(E.block(1400, 40, 30, 420, { cls: 's-gate', tag: 'gate', html: 'Biztonsági ellenőrzés' }));
         list.push(E.zone(1340, function () {

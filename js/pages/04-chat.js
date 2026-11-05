@@ -4,15 +4,20 @@
   var E = RG.E;
 
   var chatIndex = 0;
-  function bubbleHtml(index) {
+  function message(index) {
     var list = RG.cfg.chat;
-    var m = list[index % list.length];
-    return '<small>' + RG.esc(m.from) + '</small>' + RG.fmt(m.text);
+    return list[index % list.length];
   }
+  function bubbleHtml(index) {
+    var m = message(index);
+    return '<small>' + RG.esc(m.from) + '</small><span>' + RG.fmt(m.text) + '</span>';
+  }
+  function longCls(index) { return message(index).text.length > 30 ? ' long' : ''; }
   function side(x) { return x + 100 > 480 ? 'me' : ''; }
 
   function bubble(x, y, w) {
-    return E.platform(x, y, w, 44, { cls: 'c-bubble ' + side(x), html: bubbleHtml(chatIndex++) });
+    var i = chatIndex++;
+    return E.platform(x, y, w, 44, { cls: 'c-bubble ' + side(x) + longCls(i), html: bubbleHtml(i) });
   }
   function deleted(x, y, w) {
     return E.collapse(x, y, w, 44, { cls: 'c-bubble ' + side(x), html: '<small>Valaki</small><i>Ez az üzenet törölve lesz</i>', delay: 80 });
@@ -21,7 +26,8 @@
     return E.fake(x, y, w, 44, { cls: 'c-bubble typing ' + side(x), html: '<small>Valaki</small>gépel…' });
   }
   function moving(x, y, w, toY) {
-    return E.mover(x, y, w, 44, { from: [x, y], to: [x, toY], speed: 1, cls: 'c-bubble ' + side(x), html: bubbleHtml(chatIndex++) });
+    var i = chatIndex++;
+    return E.mover(x, y, w, 44, { from: [x, y], to: [x, toY], speed: 1, cls: 'c-bubble ' + side(x) + longCls(i), html: bubbleHtml(i) });
   }
   function bell(y, from, to, speed) {
     return E.patrol(from, y, 34, 34, { axis: 'x', from: from, to: to, speed: speed, cls: 'emoji c-bell', html: '🔔' });

@@ -17,7 +17,11 @@
     pageloadUrl = document.getElementById('pageload-url');
 
     muteBtn.addEventListener('click', onMuteClick);
+    ctx();
+    ui.preloadSamples();
     addEventListener('pointerdown', ui.unlockAudio);
+    addEventListener('pointerdown', resumeMusic);
+    addEventListener('keydown', resumeMusic);
 
     document.getElementById('stage').addEventListener('pointermove', function (e) {
       if (e.pointerType !== 'mouse') return;
@@ -125,11 +129,17 @@
   /* ---------- hangok ---------- */
 
   var audio = null, muted = false, muteClicks = 0;
-  ui.unlockAudio = function () {
-    if (audio) return;
+  function ctx() {
+    if (audio) return audio;
     var Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
+    if (!Ctx) return null;
     try { audio = new Ctx(); } catch (e) { audio = null; }
+    return audio;
+  }
+  // A hangkörnyezet már betöltéskor létrejön (a hangok előre dekódolódnak), az első kattintás csak elindítja.
+  ui.unlockAudio = function () {
+    var c = ctx();
+    if (c && c.state === 'suspended' && c.resume) c.resume();
   };
   var SOUNDS = {
     jump: [[420, 0.07, 'square', 0.03]],
@@ -140,7 +150,75 @@
     checkpoint: [[660, 0.07, 'triangle', 0.05], [880, 0.1, 'triangle', 0.05]],
     win: [[523, 0.08, 'triangle', 0.05], [659, 0.08, 'triangle', 0.05], [784, 0.14, 'triangle', 0.05]]
   };
+  // Hangfájlok: előre letöltve és dekódolva, az eleji csend levágva, így azonnal szólnak.
+  // Ha ez nem megy (pl. a fájlt dupla kattintással nyitottad meg), sima <audio> a tartalék.
+  var buffers = {}, fallback = {};
+
+  function trimSilence(c, buf) {
+    var start = buf.length, ch, data, i;
+    for (ch = 0; ch < buf.numberOfChannels; ch++) {
+      data = buf.getChannelData(ch);
+      for (i = 0; i < data.length && i < start; i++) {
+        if (Math.abs(data[i]) > 0.015) { start = i; break; }
+      }
+    }
+    start = Math.max(0, start - Math.floor(buf.sampleRate * 0.004));
+    if (start < buf.sampleRate * 0.01 || start >= buf.length) return buf;
+    var out = c.createBuffer(buf.numberOfChannels, buf.length - start, buf.sampleRate);
+    for (ch = 0; ch < buf.numberOfChannels; ch++) out.getChannelData(ch).set(buf.getChannelData(ch).subarray(start));
+    return out;
+  }
+
+  function load(src) {
+    if (!src || src in buffers) return;
+    buffers[src] = null;
+    fallback[src] = new Audio(src);
+    fallback[src].preload = 'auto';
+    var c = ctx();
+    if (!c || !window.fetch) return;
+    fetch(src)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(function (data) { return new Promise(function (res, rej) { c.decodeAudioData(data, res, rej); }); })
+      .then(function (buf) { buffers[src] = trimSilence(c, buf); })
+      .catch(function () { /* marad a tartalék <audio> */ });
+  }
+  ui._buffers = buffers;
+
+  // Visszaad egy { stop } objektumot, hogy az ismétlődő hang (csengés) leállítható legyen.
+  ui.playSample = function (src, opts) {
+    opts = opts || {};
+    if (!src || muted || RG.holdLoop) return null;
+    load(src);
+    var c = audio, buf = buffers[src];
+    if (c && buf) {
+      if (c.state === 'suspended' && c.resume) c.resume();
+      var node = c.createBufferSource(), gain = c.createGain();
+      node.buffer = buf;
+      node.loop = !!opts.loop;
+      gain.gain.value = opts.volume || 0.9;
+      node.connect(gain).connect(c.destination);
+      node.start();
+      return { stop: function () { try { node.stop(); } catch (e) { /* már leállt */ } } };
+    }
+    var a = fallback[src].cloneNode();
+    a.volume = opts.volume || 0.9;
+    a.loop = !!opts.loop;
+    var pr = a.play();
+    if (pr && pr.catch) pr.catch(function () { /* még nem volt kattintás */ });
+    return { stop: function () { a.pause(); } };
+  };
+
+  ui.preloadSamples = function () {
+    var s = RG.cfg.sounds || {};
+    (s.death || []).concat([s.flee, s.call]).forEach(load);
+  };
+
   ui.sfx = function (name) {
+    var snd = RG.cfg.sounds || {};
+    if (name === 'die' && snd.death && snd.death.length) {
+      ui.playSample(snd.death[Math.floor(Math.random() * snd.death.length)]);
+      return;
+    }
     if (!audio || muted || RG.holdLoop) return;
     var t = audio.currentTime;
     (SOUNDS[name] || []).forEach(function (s) {
@@ -160,10 +238,47 @@
     muted = v;
     if (v) muteClicks = 2;
     muteBtn.textContent = v ? '🔇' : '🔊';
+    if (music) music.muted = v;
+    if (v) ui.stopRing();
   };
+
+  // Háttérzene: ismétlődve szól. A böngésző csak kattintás után engedi elindítani.
+  var music = null;
+  ui.startMusic = function () {
+    if (!RG.cfg.music || RG.holdLoop) return;
+    if (!music) {
+      music = new Audio(RG.cfg.music);
+      music.loop = true;
+      music.volume = 0.5;
+    }
+    music.muted = muted;
+    var pr = music.play();
+    if (pr && pr.catch) pr.catch(function () { /* még nincs kattintás, a következőnél újrapróbálja */ });
+    if (!G.meta.music) {
+      G.meta.music = true;
+      G.save();
+    }
+  };
+  function resumeMusic() {
+    if (G.meta.music && (!music || music.paused)) ui.startMusic();
+  }
+
+  // A játék elején megkérdezi, kér-e zenét. A válasz mindegy.
+  ui.askMusic = function () {
+    ui.modal({
+      cls: 'music-ask',
+      html: '<div class="ma-icon">🎵</div><div class="ma-title">Szeretnél háttérzenét?</div><div class="ma-sub">A játékélmény fokozása érdekében.</div>',
+      buttons: [
+        { label: 'Igen, kérek', cls: 'ma-yes', onClick: function (close) { close(); ui.startMusic(); ui.say('Remek választás.'); } },
+        { label: 'Nem, köszönöm', cls: 'ma-no', onClick: function (close) { close(); ui.startMusic(); ui.say('Ezt a választ nem fogadjuk el. Zene indul.', 3500); } }
+      ]
+    });
+  };
+
   function onMuteClick() {
     muteClicks++;
     if (muteClicks === 1) {
+      if (music) music.volume = 1;
       ui.say('Hangerő növelve. Szívesen.');
       return;
     }
@@ -177,6 +292,75 @@
   ui.clearOverlay = function () {
     overlay.innerHTML = '';
     fleers = [];
+    ui.stopRing();
+    callTimers.forEach(clearTimeout);
+    callTimers = [];
+  };
+
+  /* ---------- hamis Discord-hívás ---------- */
+
+  var ring = null, callTimers = [];
+  ui.stopRing = function () {
+    if (ring) { ring.stop(); ring = null; }
+  };
+  function later(fn, ms) { callTimers.push(setTimeout(fn, ms)); }
+
+  // Bejövő hívás csengéssel. Az elutasítás gomb elmenekül, elutasítás után egyszer visszahív.
+  ui.fakeCall = function (caller, opts) {
+    opts = opts || {};
+    var again = !!opts.again;
+    var panel = make('div', 'dcall',
+      '<div class="dc-avatar"><span>' + RG.esc(String(caller).charAt(0).toUpperCase()) + '</span></div>' +
+      '<div class="dc-name">' + RG.esc(caller) + '</div>' +
+      '<div class="dc-sub">' + (again ? 'Újra hív…' : 'Bejövő hívás…') + '</div>');
+    var accept = make('button', 'dc-btn dc-accept', '📞');
+    accept.type = 'button';
+    accept.setAttribute('tabindex', '-1');
+    panel.appendChild(accept);
+    overlay.appendChild(panel);
+
+    var decline = make('button', 'dc-btn dc-decline', '📞');
+    decline.type = 'button';
+    decline.style.left = '738px';
+    decline.style.top = '232px';
+    overlay.appendChild(decline);
+
+    ui.stopRing();
+    ring = ui.playSample((RG.cfg.sounds || {}).call, { loop: true, volume: 0.7 });
+    var ended = false;
+
+    function end(msg) {
+      if (ended) return;
+      ended = true;
+      ui.stopRing();
+      panel.classList.add('ended');
+      panel.querySelector('.dc-sub').textContent = msg;
+      accept.remove();
+      decline.remove();
+      later(function () { panel.remove(); }, 1600);
+    }
+
+    accept.addEventListener('click', function () {
+      if (ended) return;
+      ui.stopRing();
+      accept.remove();
+      decline.remove();
+      panel.querySelector('.dc-sub').textContent = 'Csatlakozás…';
+      later(function () { if (!ended) panel.querySelector('.dc-sub').textContent = '🔇 ' + caller + ' némítva van.'; }, 1500);
+      later(function () { end('A hívás véget ért. Ennyi volt.'); }, 3600);
+    });
+
+    ui.flee(decline, {
+      hops: again ? 1 : 2,
+      region: [560, 120, 300, 200],
+      onClick: function () {
+        if (ended) return;
+        end('Hívás elutasítva.');
+        if (!again) later(function () { ui.fakeCall(caller, { again: true }); }, 4500);
+      }
+    });
+
+    later(function () { end('Nem fogadott hívás.'); }, 15000);
   };
 
   function make(tag, cls, html) {
@@ -198,9 +382,15 @@
     el.setAttribute('tabindex', '-1');
 
     function canFlee() { return o.forever || left > 0; }
+    var hopped = false;
     function hop() {
       lastHop = Date.now();
       left--;
+      // Az első elugrásnál szól a barlangos hang.
+      if (!hopped) {
+        hopped = true;
+        ui.playSample((RG.cfg.sounds || {}).flee);
+      }
       var x = region[0], y = region[1];
       // Mindig távolabb ugrik attól, ahol most van.
       var cx = parseFloat(el.style.left) || 0, cy = parseFloat(el.style.top) || 0;

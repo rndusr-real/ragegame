@@ -108,6 +108,7 @@
         G.save();
       });
       RG.ui.addOverlay(btn);
+      if (!G.meta.music && RG.cfg.music) RG.ui.askMusic();
     }
   });
 })(window.RG);

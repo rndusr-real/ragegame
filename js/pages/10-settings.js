@@ -44,8 +44,12 @@
     id: 'settings', url: 'beallitasok', theme: 'settings', w: 4720, h: 540,
     spawn: { x: 60, y: 430 },
 
-    build: function () {
+    build: function (G) {
       return [
+        G.flags.call ? E.deco(0, 0, 1, 1) : E.zone(1340, function () {
+          G.flags.call = true;
+          RG.ui.fakeCall('Anyukád');
+        }),
         E.deco(30, 50, 500, 40, { cls: 'set-title', html: '⚙️ Beállítások' }),
         E.deco(30, 92, 500, 30, { cls: 'set-sub', html: 'A módosítások azonnal, kérdés nélkül érvénybe lépnek.' }),
 

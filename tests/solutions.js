@@ -103,7 +103,7 @@
   var SOLUTIONS = [
     // 1. pálya
     function () {
-      G.flags.intro = true; G.freeze = false; G.hidePlayer = false; RG.ui.clearOverlay();
+      G.flags.intro = true; G.freeze = false; G.hidePlayer = false; G.paused = false; RG.ui.clearOverlay();
       settle();
       go(440);
       jump(590);                     // kiugró tüske felett
