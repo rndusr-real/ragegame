@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff5fa2">
+  <title>Boldog szülinapot!</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="stage" class="stage">
+    <div id="world">
+      <div id="ents"></div>
+      <div id="player"><i class="stem"><b></b><b></b></i><i class="dot"></i></div>
+    </div>
+    <div id="dark"></div>
+    <div id="hud">
+      <div id="addr"><span class="lock">🔒</span><span id="url"></span></div>
+      <div id="deaths"></div>
+      <button id="mute" type="button" tabindex="-1">🔊</button>
+    </div>
+    <div id="narrator"></div>
+    <div id="overlay"></div>
+    <div id="pageload"><div class="spinner"></div><div id="pageload-url"></div></div>
+  </div>
+
+  <div id="touch">
+    <button id="t-left" type="button" tabindex="-1">◀</button>
+    <button id="t-right" type="button" tabindex="-1">▶</button>
+    <button id="t-jump" type="button" tabindex="-1">▲</button>
+  </div>
+
+  <div id="rotate"><div>📱↻<br>Fordítsd el a telefont.<br><small>Igen, ez is a játék része.</small></div></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/01-landing.js"></script>
+  <script src="js/pages/02-cookies.js"></script>
+  <script src="js/pages/03-shop.js"></script>
+  <script src="js/pages/04-chat.js"></script>
+  <script src="js/pages/05-video.js"></script>
+  <script src="js/pages/06-enaplo.js"></script>
+  <script src="js/pages/07-settings.js"></script>
+  <script src="js/ending.js"></script>
+  <script>RG.boot();</script>
+</body>
+</html>
