@@ -1,4 +1,4 @@
-// 6. pálya: e-napló. Az egyesek leszakadnak, a házi feladatot határidőre be kell adni.
+// 8. pálya: e-napló. Az egyesek leszakadnak, a házi feladatot határidőre be kell adni.
 (function (RG) {
   'use strict';
   var E = RG.E;
@@ -38,6 +38,13 @@
         E.deco(2290, 360, 60, 100, { cls: 'g-submit', html: '📤<br>Beadás' }),
         E.sensor(2300, 360, 40, 100, function (G) { level.stopDeadline(G); }),
         E.checkpoint('l6b', 2380, 460),
+        E.zone(2430, function (G) {
+          G.mods.flip = true;
+          RG.ui.say('Szülői nézet bekapcsolva. Fejjel lefelé.', 3000);
+          RG.ui.sfx('trap');
+        }),
+        E.spike(2560, 436, 30, 24),
+        E.zone(2700, function (G) { G.mods.flip = false; }),
 
         // Szülői értesítő a szakadék felett
         E.patrol(2815, 250, 40, 30, { axis: 'y', from: 250, to: 420, speed: 1.6, cls: 'emoji g-letter', html: '✉️', tag: 'letter' }),

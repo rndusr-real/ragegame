@@ -2,7 +2,10 @@
 // Tipp: valódi nevek helyett használj beceneveket, mert a GitHub Pages forrása nyilvános lehet.
 window.RG_CONFIG = {
   // Az ünnepelt neve vagy beceneve
-  name: 'NÉV',
+  name: 'Peti-kun',
+
+  // A játékos karakter arca (átlátszó hátterű PNG). Ha üresre állítod (''), a felkiáltójel marad.
+  face: 'assets/face.png',
 
   // Hány éves lesz
   age: 18,
@@ -24,17 +27,17 @@ window.RG_CONFIG = {
 
   // A stáblista nevei a hamis győzelemnél
   credits: [
-    'Rendező: az osztály',
+    'Rendező: titok',
     'Forgatókönyv: senki',
-    'Csapdák: a barátaid',
-    'Ajándék: hamarosan',
-    'Köszönet: türelmedért'
+    'Csapdák: én',
+    'Ajándék: valamikor (soha)',
+    'Köszönet: semmiért'
   ],
 
   // Extra narrátorszövegek halálkor. Bármikor felbukkanhatnak.
   taunts: [
     '{age} évesen már tudhatnád, hogyan kell ugrani.',
     '{name}, ezt mindenki látta.',
-    'Az osztály többi tagja ezt elsőre megcsinálta. Hazudok, de akkor is.'
+    'Az mások ezt elsőre megcsinálták. Hazudok, de akkor is.'
   ]
 };

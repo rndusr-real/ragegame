@@ -9,9 +9,11 @@
 
     build: function (G) {
       var name = RG.esc(RG.cfg.name);
-      var bang = G.flags.intro ? '' : '<span id="bang">!</span>';
+      var bang = G.flags.intro ? '' : RG.cfg.face
+        ? '<span id="bang" class="bang-face" style="background-image:url(&quot;' + RG.esc(RG.cfg.face) + '&quot;)"></span>'
+        : '<span id="bang">!</span>';
       return [
-        E.deco(40, 62, 880, 76, { cls: 'k-title', html: 'Boldog szülinapot, ' + name + bang }),
+        E.deco(40, 62, 880, 76, { cls: 'k-title', html: 'Boldog szülinapot, ' + name + '! ' + bang }),
         E.deco(44, 144, 620, 30, { cls: 'k-sub', html: 'Sok boldogságot kívánok! Az ajándékodat lentebb találod.' }),
         E.deco(40, 186, 280, 34, { cls: 'k-hint', html: '<span class="hint-key">← → mozgás, szóköz: ugrás</span><span class="hint-touch">◀ ▶ mozgás, ▲ ugrás</span>' }),
 
@@ -85,7 +87,9 @@
       btn.addEventListener('click', function () {
         var bang = document.getElementById('bang');
         var r = bang.getBoundingClientRect();
-        var at = G.toStage(r.left, r.top);
+        var at = G.toStage(r.left + r.width / 2, r.top + r.height / 2);
+        at.x -= G.player.w / 2;
+        at.y -= G.player.h / 2;
         var p = G.player;
         p.x = at.x + G.cam.x;
         p.y = at.y + G.cam.y;
@@ -99,7 +103,7 @@
         G.hidePlayer = false;
         btn.classList.add('fall');
         RG.ui.sfx('trap');
-        RG.ui.say('Hoppá. Kiesett a felkiáltójel a címből. Most már te vagy az.', 4000);
+        RG.ui.say(RG.cfg.face ? 'Hoppá. Kiestél a címből. Most már te vagy a főszereplő.' : 'Hoppá. Kiesett a felkiáltójel a címből. Most már te vagy az.', 4000);
         setTimeout(function () { btn.remove(); }, 900);
         G.save();
       });

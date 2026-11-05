@@ -89,7 +89,8 @@
     coin: ['Nem nyertél iPhone-t.', 'Mégsem te vagy az egymilliomodik látogató.'],
     credits: ['Spoiler: a stáblista veszélyes.'],
     spinner: ['Pufferelés…', 'A töltés is tud ölni.'],
-    deadline: ['Késve beadva. Elégtelen.', 'A határidő az határidő.']
+    deadline: ['Késve beadva. Elégtelen.', 'A határidő az határidő.'],
+    lag: ['Nem te voltál lassú. Az internet. Vagy te.']
   };
   ui.onDeath = function (reason) {
     ui.updateDeaths();
@@ -104,6 +105,21 @@
       }
     }
     if (line) ui.say(line);
+  };
+
+  // Hamis GAME OVER egyszer, 13 halál után. Semmi nem törlődik, csak ijesztgetés.
+  ui.afterRespawn = function () {
+    if (G.deaths < 13 || G.meta.gameOver) return;
+    G.meta.gameOver = true;
+    G.save();
+    ui.modal({
+      cls: 'gameover',
+      html: '<div class="go-title">GAME OVER</div><div class="go-sub">Elfogytak az életeid.<br>A játék az első pályától újraindul.</div>',
+      buttons: [
+        { label: 'Újrakezdés', cls: 'go-yes', onClick: function (close) { close(); ui.say('Vicceltem. Nincsenek is életek.', 3500); } },
+        { label: 'Inkább nem', cls: 'go-no', onClick: function (close) { close(); ui.say('Jó, akkor maradsz. Úgyis vicc volt.', 3500); } }
+      ]
+    });
   };
 
   /* ---------- hangok ---------- */

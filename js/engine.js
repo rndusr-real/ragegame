@@ -26,7 +26,7 @@ window.RG = window.RG || {};
   };
 
   function defaultMods() {
-    return { invert: false, gravity: PHYS.gravity, dark: false };
+    return { invert: false, gravity: PHYS.gravity, dark: false, lag: 0, flip: false };
   }
 
   var G = RG.G = {
@@ -35,7 +35,7 @@ window.RG = window.RG || {};
     player: { x: 0, y: 0, w: 18, h: 30, vx: 0, vy: 0, grounded: false, ground: null, coyote: 0, buffer: 0, jumping: false, face: 1 },
     cam: { x: 0, y: 0 },
     checkpoint: null, flags: {}, mods: defaultMods(),
-    deaths: 0, playFrames: 0,
+    deaths: 0, playFrames: 0, meta: {}, lagQ: [],
     paused: false, freeze: false, dead: false, deadT: 0, transition: null, god: false, hidePlayer: false
   };
 
@@ -53,7 +53,7 @@ window.RG = window.RG || {};
     if (G.noSave) return;
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify({
-        level: G.levelIndex, checkpoint: G.checkpoint, flags: G.flags,
+        level: G.levelIndex, levelId: G.level && G.level.id, checkpoint: G.checkpoint, flags: G.flags, meta: G.meta,
         deaths: G.deaths, playFrames: G.playFrames, muted: RG.ui.isMuted()
       }));
     } catch (e) { /* nincs tároló, a játék mentés nélkül is fut */ }
@@ -156,6 +156,7 @@ window.RG = window.RG || {};
     G.paused = false;
     G.freeze = false;
     G.hidePlayer = false;
+    G.lagQ = [];
     stage.className = 'stage theme-' + L.theme;
     world.style.width = L.w + 'px';
     world.style.height = L.h + 'px';
@@ -378,7 +379,10 @@ window.RG = window.RG || {};
     if (G.dead) {
       if (--G.deadT <= 0) {
         if (G.level.afterDeath) G.level.afterDeath(G);
-        else build();
+        else {
+          build();
+          RG.ui.afterRespawn();
+        }
       }
       return;
     }
@@ -397,6 +401,13 @@ window.RG = window.RG || {};
       if (e.update && e.active) e.update(G, e);
     }
     if (G.dead || G.transition) return;
+
+    if (G.mods.lag) {
+      G.lagQ.push({ left: !!inp.left, right: !!inp.right, jump: !!inp.jump });
+      inp = G.lagQ.length > G.mods.lag ? G.lagQ.shift() : { left: false, right: false, jump: false };
+    } else if (G.lagQ.length) {
+      G.lagQ = [];
+    }
 
     if (!G.freeze) {
       updatePlayer(inp);
@@ -444,7 +455,13 @@ window.RG = window.RG || {};
 
   function render() {
     var p = G.player;
-    world.style.transform = 'translate(' + (-Math.round(G.cam.x)) + 'px,' + (-Math.round(G.cam.y)) + 'px)';
+    if (G.mods.flip) {
+      world.style.transform = 'translate(' + Math.round(W + G.cam.x) + 'px,' + Math.round(H + G.cam.y) + 'px) rotate(180deg)';
+    } else {
+      world.style.transform = 'translate(' + (-Math.round(G.cam.x)) + 'px,' + (-Math.round(G.cam.y)) + 'px)';
+    }
+    playerEl.classList.toggle('walk', p.grounded && Math.abs(p.vx) > 0.5);
+    playerEl.classList.toggle('air', !p.grounded);
     G.ents.forEach(drawEnt);
     playerEl.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px) scaleX(' + (p.face < 0 ? -1 : 1) + ')';
     playerEl.style.display = (G.dead || G.hidePlayer) ? 'none' : '';
@@ -477,6 +494,18 @@ window.RG = window.RG || {};
 
   /* ---------- indítás ---------- */
 
+  function findLevel(id) {
+    for (var i = 0; i < RG.levels.length; i++) if (RG.levels[i].id === id) return i;
+    return -1;
+  }
+
+  function setupFace() {
+    var face = RG.cfg.face;
+    if (!face) return;
+    playerEl.classList.add('has-face');
+    playerEl.querySelector('.face').style.backgroundImage = 'url("' + face + '")';
+  }
+
   RG.boot = function () {
     if (params.has('reset')) {
       storageClear();
@@ -493,6 +522,7 @@ window.RG = window.RG || {};
     darkEl = document.getElementById('dark');
 
     bindInput();
+    setupFace();
     RG.ui.init(G);
     fit();
     addEventListener('resize', fit);
@@ -502,12 +532,15 @@ window.RG = window.RG || {};
     if (RG.debugMode && params.has('level')) {
       G.noSave = true;
       G.loadLevel(Math.max(0, Math.min(RG.levels.length - 1, parseInt(params.get('level'), 10) || 0)));
-    } else if (save && RG.levels[save.level]) {
+    } else if (save && (findLevel(save.levelId) >= 0 || RG.levels[save.level])) {
+      var idx = findLevel(save.levelId);
+      if (idx < 0) idx = save.level;
       G.deaths = save.deaths || 0;
       G.playFrames = save.playFrames || 0;
+      G.meta = save.meta || {};
       RG.ui.setMuted(!!save.muted);
-      G.levelIndex = save.level;
-      G.level = RG.levels[save.level];
+      G.levelIndex = idx;
+      G.level = RG.levels[idx];
       G.flags = save.flags || {};
       G.checkpoint = save.checkpoint || null;
       G.resumed = true;
@@ -537,7 +570,7 @@ window.RG = window.RG || {};
     };
     if (params.has('god')) G.god = true;
     var s = document.createElement('script');
-    s.src = 'tests/solutions.js';
+    s.src = 'tests/solutions.js?' + Date.now();
     document.body.appendChild(s);
   }
 })(window.RG);

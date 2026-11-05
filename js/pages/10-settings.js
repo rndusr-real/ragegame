@@ -1,4 +1,4 @@
-// 7. pálya: a beállítások tényleg átírják a játékot, a végén a törött 404-es oldal.
+// 10. pálya: a beállítások tényleg átírják a játékot, a végén a törött 404-es oldal.
 (function (RG) {
   'use strict';
   var E = RG.E;

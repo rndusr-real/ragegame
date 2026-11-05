@@ -54,14 +54,15 @@
   function jump(toX, opts) {
     opts = opts || {};
     var p = G.player, dir = toX > p.x ? 1 : -1, hold = opts.hold === undefined ? 22 : opts.hold;
-    var level = G.level;
+    var level = G.level, airborne = false;
     for (var i = 0; i < 400; i++) {
       if (G.transition || G.level !== level) return;
       var reached = dir > 0 ? p.x >= toX : p.x <= toX;
       var pressing = i < hold;
       var brake = reached && p.vx * dir > 0.3;
       tick(dirInput(brake ? -dir : (reached ? 0 : dir), pressing));
-      if (i > 2 && p.grounded) {
+      if (!p.grounded) airborne = true;
+      if (airborne && p.grounded) {
         if (!opts.keep) settle();
         return;
       }
@@ -298,7 +299,19 @@
       finish();
     },
 
-    // 5. pálya: videó
+    // Minijáték: gyertyák
+    function () {
+      for (var i = 0; i < 600 && !document.querySelector('.cake-panel .mg-btn'); i++) {
+        document.querySelectorAll('.candle.lit').forEach(function (c) { c.click(); });
+        tick({});
+      }
+      var btn = document.querySelector('.cake-panel .mg-btn');
+      if (!btn) fail('Nem aludt ki minden gyertya');
+      btn.click();
+      finish();
+    },
+
+    // 6. pálya: videó
     function () {
       var p = G.player, lvl = G.level;
       go(380, { keep: true });
@@ -321,8 +334,8 @@
         return a > 2.9 && a < 3.3;
       }, 400, 'pörgettyű bal oldalt');
       go(1720);
-      go(1975, { keep: true });
-      jump(2110);                    // kiugró tüske
+      go(1950, { keep: true });
+      jump(2110);                    // kiugró tüske, késleltetéssel
       go(2262);
       hopTo(2340);                   // ajánlott videók
       hopTo(2500);
@@ -332,7 +345,24 @@
       finish();
     },
 
-    // 6. pálya: e-napló
+    // Minijáték: kvíz (egy rossz válasszal, hogy a visszaugrás is ki legyen próbálva)
+    function () {
+      function opt(k) { return document.querySelector('.quiz-opt[data-k="' + k + '"]'); }
+      opt(1).click();                // 1. kérdés: életkor
+      opt(0).click();                // 2. kérdés: a név
+      opt(0).click();                // 3. kérdés: 4 -> rossz, vissza az elejére
+      if (document.querySelector('.quiz-count').textContent.indexOf('1/') < 0) fail('Rossz válasz után nem ugrott vissza');
+      opt(1).click();
+      opt(2).click();
+      opt(2).click();                // 5
+      opt(1).click();                // élvezed? nem
+      var btn = document.querySelector('.quiz-panel .mg-btn');
+      if (!btn) fail('Kvíz nem ért véget');
+      btn.click();
+      finish();
+    },
+
+    // 8. pálya: e-napló
     function () {
       var p = G.player;
       go(560, { keep: true });
@@ -367,6 +397,9 @@
       wait(40);
       go(2320);                      // beadás
       if (G.level.deadline) fail('Nem sikerült beadni');
+      go(2515, { keep: true });      // fejjel lefelé szakasz
+      if (!G.mods.flip) fail('Nem fordult meg a kép');
+      jump(2620);
       go(2700);
       var letter = find('letter');
       go(2745);
@@ -378,7 +411,18 @@
       finish();
     },
 
-    // 7. pálya: beállítások
+    // Minijáték: kő-papír-olló
+    function () {
+      for (var i = 0; i < 10 && !document.querySelector('.rps-panel .mg-btn'); i++) {
+        document.querySelectorAll('.rps-move')[i % 3].click();
+      }
+      var btn = document.querySelector('.rps-panel .mg-btn');
+      if (!btn) fail('Nem lehetett nyerni');
+      btn.click();
+      finish();
+    },
+
+    // 10. pálya: beállítások
     function () {
       go(595);                       // felcserélt irányokkal
       jump(720);

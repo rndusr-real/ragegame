@@ -1,4 +1,4 @@
-// 5. pálya: videómegosztó. Átugorhatatlan reklám, pufferelő lejátszósáv, összeomló ajánlott videók.
+// 6. pálya: videómegosztó. Átugorhatatlan reklám, pufferelő lejátszósáv, összeomló ajánlott videók.
 (function (RG) {
   'use strict';
   var E = RG.E;
@@ -56,7 +56,17 @@
 
         E.block(1700, 460, 600, 80, { cls: 'v-floor' }),
         E.checkpoint('l5a', 1730, 460),
-        E.popspike(2050, 460, { trigger: [2000, 2100] }),
+        E.deco(1780, 300, 220, 30, { cls: 'v-meta', html: '📶 Kapcsolat: 1 pálcika' }),
+        E.zone(1770, function (G) {
+          G.mods.lag = 12;
+          RG.ui.say('Gyenge internetkapcsolat. Minden kicsit később történik.', 3500);
+          RG.ui.sfx('trap');
+        }),
+        E.zone(2272, function (G) {
+          G.mods.lag = 0;
+          RG.ui.say('Kapcsolat helyreállt.');
+        }),
+        E.popspike(2050, 460, { trigger: [1930, 2100] }),
 
         // Ajánlott videók: összeomlanak, az egyik nem is létezik
         E.deco(2320, 250, 300, 24, { cls: 'v-meta', html: 'Következő videók' }),
