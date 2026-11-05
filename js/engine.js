@@ -69,11 +69,17 @@ window.RG = window.RG || {};
   };
 
   function bindInput() {
+    function typing(e) {
+      var t = e.target;
+      return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA');
+    }
     addEventListener('keydown', function (e) {
+      if (typing(e)) return;
       var k = KEYS[e.code];
       if (k) { input[k] = true; e.preventDefault(); RG.ui.unlockAudio(); }
     });
     addEventListener('keyup', function (e) {
+      if (typing(e)) return;
       var k = KEYS[e.code];
       if (k) { input[k] = false; e.preventDefault(); }
     });
@@ -82,7 +88,8 @@ window.RG = window.RG || {};
     });
     // A szóköz ne kattintson rá újra az utoljára megnyomott gombra.
     document.addEventListener('click', function () {
-      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      var a = document.activeElement;
+      if (a && a.tagName !== 'INPUT' && a.blur) a.blur();
     });
     document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 

@@ -108,7 +108,10 @@
         G.save();
       });
       RG.ui.addOverlay(btn);
-      if (!G.meta.music && RG.cfg.music) RG.ui.askMusic();
+      var askMusic = function () { if (!G.meta.music && RG.cfg.music) RG.ui.askMusic(); };
+      var askCode = function () { if (!G.meta.codeOk) RG.ui.askCode(askMusic); else askMusic(); };
+      if (!G.meta.tos) RG.ui.showTos(askCode);
+      else askCode();
     }
   });
 })(window.RG);

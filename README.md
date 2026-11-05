@@ -39,6 +39,30 @@ Utána jön a befejezés: hamis győzelem, gyilkos stáblista, 99%-on megálló 
 - `?debug=1&level=3`: hibakereső mód (nem ment), egy adott pályától
 - `?debug=1&level=0`, majd a konzolban `RG.test.runAll()`: a bot halál nélkül végigjátssza az összes pályát, így bizonyítja, hogy megoldhatók
 
+## Kezdőkód (Firebase)
+
+A feltételek elfogadása után a játék egy kódot kér, a helyes kód: `SeMmI` (kis- és nagybetű számít). A játék a Firebase Realtime Database `startCode` kulcsáról olvassa, így a nyilvános forrásban nem látszik. Ha nincs beállítva Firebase, vagy az adatbázis nem érhető el, egy beépített tartalék kód (szintén `SeMmI`) működik.
+
+Beállítás:
+
+1. https://console.firebase.google.com → új projekt → Build → Realtime Database → Create database.
+2. A Data fülön a gyökér alá egy új kulcs: `startCode`, érték: `SeMmI`.
+3. A Rules fülön:
+
+   ```json
+   {
+     "rules": {
+       ".read": false,
+       ".write": false,
+       "startCode": { ".read": true }
+     }
+   }
+   ```
+
+4. Az adatbázis címét (pl. `https://valami-default-rtdb.europe-west1.firebasedatabase.app`) írd be a `js/config.js` `firebase.databaseURL` mezőjébe.
+
+Teszteléshez a `tests/fake-db/startCode.json` egy utánzott Firebase-válasz (`TesztKod`): a `databaseURL`-t ideiglenesen `http://localhost:5173/tests/fake-db`-re állítva kipróbálható.
+
 ## Közzététel
 
 GitHub Pages: Settings → Pages → Deploy from branch → `main` / root. Ingyenes csomagban a repónak nyilvánosnak kell lennie, ezért a `config.js` tartalma bárki számára látható.

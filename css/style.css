@@ -427,3 +427,52 @@ body.debug .e-sensor { background: rgba(0,200,255,.1); }
 .dc-btn { width: 52px; height: 52px; border: 0; border-radius: 50%; color: #fff; font-size: 22px; }
 .dc-accept { position: absolute; left: 70px; bottom: 16px; background: #23a55a; }
 .dc-decline { position: absolute; z-index: 3; background: #da373c; transform: rotate(135deg); transition: left .1s, top .1s; }
+
+/* ---------- felhasználási feltételek ---------- */
+.modal.tos { width: 640px; padding: 16px 20px 14px; text-align: left; }
+.tos-head { border-bottom: 2px solid #222; padding-bottom: 6px; margin-bottom: 8px; }
+.tos-title { font: 800 19px Georgia, "Times New Roman", serif; color: #111; }
+.tos-sub { font: italic 12px Georgia, serif; color: #777; margin-top: 2px; }
+.tos-text {
+  height: 210px; overflow-y: auto; touch-action: pan-y; padding: 8px 12px; background: #fafaf7; border: 1px solid #ccc;
+  font: 13px/1.45 Georgia, "Times New Roman", serif; color: #333;
+  -webkit-user-select: text; user-select: text;
+}
+.tos-clause { margin-bottom: 10px; }
+.tos-clause > b { display: block; font-size: 13.5px; color: #111; }
+.tos-clause p { margin: 2px 0 0; }
+.tos-clause.key { padding: 8px 10px; background: #fff3c4; border-left: 4px solid #e8175d; }
+.tos-clause.key > b { color: #c0102c; letter-spacing: .5px; }
+.tos-end { margin: 14px 0 4px; text-align: center; font: italic 11.5px Georgia, serif; color: #888; }
+.tos-check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font: 600 13px system-ui, sans-serif; color: #222; cursor: pointer; }
+.tos-check input { width: 18px; height: 18px; accent-color: #1bb55c; }
+.tos-check.disabled { opacity: .4; cursor: not-allowed; }
+.tos-sign { display: flex; align-items: center; gap: 10px; margin-top: 8px; font: 600 13px system-ui, sans-serif; }
+.modal .tos-pad { display: inline-block; width: 220px; margin: 0; padding: 4px 8px; border: 0; border-bottom: 2px solid #333; background: none; color: #999; font: italic 13px Georgia, serif; text-align: left; }
+.modal .tos-pad.signed { color: #1a3fa8; font: italic 700 22px "Brush Script MT", "Segoe Script", cursive; }
+.tos-hint { margin-top: 6px; font: 12px system-ui, sans-serif; color: #c0102c; }
+.modal .tos-accept { margin-top: 8px; padding: 12px; border-radius: 8px; background: #1bb55c; color: #fff; font: 800 16px system-ui, sans-serif; }
+.modal .tos-accept.off { background: #b7c4bc; }
+.tos-decline { position: absolute; z-index: 3; padding: 8px 12px; border: 1px solid #999; border-radius: 6px; background: #fff; color: #777; font: 12px system-ui, sans-serif; transition: left .1s, top .1s; }
+
+#rec { display: none; color: #e00; font: 800 12px system-ui, sans-serif; white-space: nowrap; animation: recblink 1s steps(2) infinite; }
+body.rec #rec { display: block; }
+@keyframes recblink { 50% { opacity: .25; } }
+
+/* ---------- kezdőkód ---------- */
+.modal.startcode { width: 400px; }
+.sc-icon { font-size: 40px; }
+.sc-title { font: 800 22px system-ui, sans-serif; }
+.sc-sub { margin: 6px 0 12px; font-size: 14px; line-height: 1.4; color: #555; }
+.sc-input {
+  width: 100%; padding: 12px 14px; border: 2px solid #c8ccd2; border-radius: 8px;
+  font: 700 20px system-ui, sans-serif; text-align: center; letter-spacing: 2px; outline: none;
+  -webkit-user-select: text; user-select: text; touch-action: manipulation;
+}
+.sc-input:focus { border-color: #5865f2; }
+.sc-msg { min-height: 20px; margin-top: 8px; font: 600 13px system-ui, sans-serif; color: #777; }
+.sc-msg.bad { color: #c0102c; }
+.sc-msg.ok { color: #1b8a3a; }
+.modal .sc-check { padding: 12px; border-radius: 8px; background: #5865f2; color: #fff; font: 800 16px system-ui, sans-serif; }
+.shake-x { animation: shakex .35s ease-in-out; }
+@keyframes shakex { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }

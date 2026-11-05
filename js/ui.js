@@ -38,6 +38,7 @@
 
   ui.tick = function (g) {
     ui.updateDeaths();
+    document.body.classList.toggle('rec', !!g.meta.tos);
     if (g.playFrames % 3600 === 0) ui.updateTitle();
   };
 

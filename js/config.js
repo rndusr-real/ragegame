@@ -13,6 +13,13 @@ window.RG_CONFIG = {
   // Háttérzene (a játék elején rákérdez, de bármit választ, elindul és ismétlődik)
   music: "assets/music.mp3",
 
+  // Firebase Realtime Database: innen olvassa a játék a kezdőkódot (a "startCode" kulcs alól).
+  // Az adatbázis címét a Firebase konzol Realtime Database oldalán találod, pl.
+  // 'https://valami-default-rtdb.europe-west1.firebasedatabase.app'
+  firebase: {
+    databaseURL: 'https://ragegame-959ea-default-rtdb.europe-west1.firebasedatabase.app'
+  },
+
   // Hangeffektek. Halálkor véletlenszerűen az egyik szól, a "flee" pedig akkor, amikor egy gomb először elugrik.
   sounds: {
     death: [
