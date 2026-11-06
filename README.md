@@ -25,7 +25,7 @@ Irányítás: nyilak vagy WASD és szóköz, telefonon érintőgombok (fekvő t�
 5. Minijáték: gyertyaelfújás (visszagyulladó gyertyákkal)
 6. Videómegosztó: kétkörös reklám, pufferelő lejátszósáv, akadozó internet (késleltetett irányítás), összeomló ajánlott videók
 7. Minijáték: szülinapi kvíz (rossz válasznál vissza az elejére)
-8. E-napló: leszakadó egyesek, 24 másodperces beadási határidő, fejjel lefelé fordított „szülői nézet”
+8. E-napló: leszakadó egyesek, 20 másodperces beadási határidő, fejjel lefelé fordított „szülői nézet”
 9. Minijáték: kő-papír-olló a csaló szerver ellen
 10. Beállítások és 404: felcserélt irányok, holdgravitáció, sötét mód, csúszka, láthatatlan padló
 

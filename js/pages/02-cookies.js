@@ -42,9 +42,8 @@
         popup(1120, 380, 150, { to: [1190, 380], speed: 0.8, title: 'Frissítés', body: 'Újraindítás 3 óra múlva.', tag: 'w3' }),
 
         E.block(1300, 460, 620, 80, { cls: 'n-floor' }),
-        E.checkpoint('l2a', 1330, 460),
-        E.crusher(1500, 90, { h: 300, mid: 20, amp: 140, period: 180, phase: 0, cls: 'n-ad', html: 'HIRDETÉS<br><small>Átugorható 5 mp múlva</small>' }),
-        E.crusher(1660, 90, { h: 300, mid: 20, amp: 140, period: 180, phase: 70, cls: 'n-ad', html: 'HIRDETÉS<br><small>Fogyj 10 kilót, most</small>' }),
+        E.crusher(1500, 90, { h: 300, mid: 20, amp: 140, period: 150, phase: 0, cls: 'n-ad', html: 'HIRDETÉS<br><small>Átugorható 5 mp múlva</small>' }),
+        E.crusher(1660, 90, { h: 300, mid: 20, amp: 140, period: 150, phase: 60, cls: 'n-ad', html: 'HIRDETÉS<br><small>Fogyj 10 kilót, most</small>' }),
         E.checkpoint('l2fake', 1810, 460, { fake: true }),
 
         E.block(1920, 460, 380, 80, { cls: 'n-floor' }),

@@ -44,7 +44,7 @@
         cls: 'c-unread', html: '<b>Olvasatlan üzenetek: 999+</b>', inset: 0, z: 5, reason: 'zone', delay: 150,
         update: function (G, e) {
           if (e.delay > 0) { e.delay--; return; }
-          e.y -= 0.55;
+          e.y -= 0.65;
         }
       });
 
@@ -62,7 +62,7 @@
         E.checkpoint('l4a', 500, 1620),
 
         bubble(150, 1540, 220),
-        bell(1468, 60, 860, 3.4),
+        bell(1468, 60, 860, 3.8),
         bubble(400, 1460, 200),
         bubble(620, 1380, 200),
         typing(400, 1300, 200),
@@ -73,12 +73,12 @@
         E.checkpoint('l4b', 520, 1060),
 
         bubble(720, 980, 180),
-        bell(906, 300, 860, 2.8),
+        bell(906, 300, 860, 3.1),
         deleted(540, 900, 140),
         bubble(300, 820, 220),
         moving(580, 800, 180, 700),
         bubble(680, 660, 200),
-        bell(588, 300, 860, 3.4),
+        bell(588, 300, 860, 3.8),
         bubble(420, 580, 200),
         bubble(160, 500, 220),
         E.spring(300, 484, 50, 16, { cls: 'c-like', html: '👍' }),

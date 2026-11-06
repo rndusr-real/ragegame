@@ -6,7 +6,7 @@
   // A lejátszósáv betöltött része: ezen lehet járni. Félúton egyszer visszaugrik.
   function bufferBar(x, y, maxW) {
     return E.block(x, y, 40, 12, {
-      oneway: true, cls: 'v-buffer', tag: 'buffer', maxW: maxW, grow: 1.6, rebuffered: false, shrinkTo: 0,
+      oneway: true, cls: 'v-buffer', tag: 'buffer', maxW: maxW, grow: 1.3, rebuffered: false, shrinkTo: 0,
       update: function (G, e) {
         var w = e.w;
         if (e.shrinkTo) {
@@ -32,7 +32,7 @@
   function thumb(kind, x, y, title) {
     var o = { cls: 'v-thumb', html: '<i>▶</i><span>' + title + '</span>' };
     if (kind === 'fake') return E.fake(x, y, 110, 56, o);
-    return E.collapse(x, y, 110, 56, Object.assign(o, { delay: 32 }));
+    return E.collapse(x, y, 110, 56, Object.assign(o, { delay: 26 }));
   }
 
   var level = {
@@ -52,7 +52,7 @@
         E.deco(900, 462, 800, 8, { cls: 'v-track' }),
         bufferBar(900, 460, 800),
         E.deco(1250, 350, 140, 140, { cls: 'v-ring' }),
-        E.orbit(1320, 420, 70, { cls: 'v-dot', a: Math.PI }),
+        E.orbit(1320, 420, 70, { cls: 'v-dot', a: Math.PI, speed: 0.036 }),
 
         E.block(1700, 460, 600, 80, { cls: 'v-floor' }),
         E.checkpoint('l5a', 1730, 460),

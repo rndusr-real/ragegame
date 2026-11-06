@@ -34,7 +34,6 @@
 
         E.block(1160, 460, 320, 80, { cls: 's-floor' }),
         E.block(1780, 460, 220, 80, { cls: 's-floor' }),
-        E.checkpoint('l3a', 1200, 460),
 
         // Futószalag tüskével
         E.conveyor(1480, 460, 300, 80, { html: '« Kosár « Kosár « Kosár «' }),
@@ -46,8 +45,8 @@
         E.collapse(2030, 420, 110, 24, { cls: 's-field', html: 'Név', delay: 26 }),
         E.collapse(2170, 380, 110, 24, { cls: 's-field', html: 'Cím', delay: 26 }),
         E.fake(2310, 340, 110, 24, { cls: 's-field', html: 'Kuponkód' }),
-        E.platform(2320, 302, 90, 24, { cls: 's-field', html: 'Ez jó' }),
-        E.platform(2470, 360, 120, 24, { cls: 's-field', html: 'Megjegyzés' }),
+        E.collapse(2320, 302, 90, 24, { cls: 's-field', html: 'Ez jó', delay: 22 }),
+        E.collapse(2470, 360, 120, 24, { cls: 's-field', html: 'Megjegyzés', delay: 26 }),
 
         E.block(2620, 460, 500, 80, { cls: 's-floor' }),
         E.checkpoint('l3b', 2650, 460),

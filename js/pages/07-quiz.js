@@ -8,7 +8,10 @@
       { q: 'Hány éves lettél?', opts: [age - 1, age, age + 1, 'Nem tudom'], ok: [1], flee: 1 },
       { q: 'Mi a neved?', opts: ['{name}', '{name}', '{name}', 'Béla'], ok: [0, 1, 2], okMsg: 'Helyes. Mindhárom.' },
       { q: 'Mennyi 2 + 2?', opts: ['4', '22', '5', 'hal'], ok: [2], wrong: { 0: 'Helytelen. Szülinapon 5.' } },
-      { q: 'Élvezed ezt a játékot?', opts: ['Igen', 'Nem'], ok: [0, 1], okMsg: 'Rossz válasz, de mindegy.' }
+      { q: 'Élvezed ezt a játékot?', opts: ['Igen', 'Nem'], ok: [0, 1], okMsg: 'Rossz válasz, de mindegy.' },
+      { q: 'Hányszor haltál meg eddig?', deaths: true, ok: [2], okMsg: 'Pontosan. Ez nem dicséret.' },
+      { q: 'Kattints a ZÖLD gombra!', opts: ['Zöld', 'Piros', 'Kék', 'Sárga'], colors: ['red', 'green', 'yellow', 'blue'], ok: [1],
+        wrong: { 0: 'Az a gomb piros volt.', 2: 'Az sárga volt.', 3: 'Az kék volt.' } }
     ];
   }
 
@@ -40,8 +43,13 @@
         panel.querySelector('.quiz-count').textContent = 'Szülinapi kvíz · ' + (i + 1) + '/' + Q.length;
         panel.querySelector('.quiz-q').innerHTML = RG.fmt(q.q);
         panel.querySelector('.quiz-msg').textContent = msg || '';
-        q.opts.forEach(function (opt, k) {
-          var b = RG.ui.make('button', 'quiz-opt', RG.fmt(String(opt)));
+        var opts = q.opts;
+        if (q.deaths) {
+          var d = RG.G.deaths;
+          opts = [d + 1, d + 3, d, d + 2];
+        }
+        opts.forEach(function (opt, k) {
+          var b = RG.ui.make('button', 'quiz-opt' + (q.colors ? ' c-' + q.colors[k] : ''), RG.fmt(String(opt)));
           b.type = 'button';
           b.dataset.k = k;
           b.style.left = SLOTS[k][0] + 'px';
@@ -70,7 +78,7 @@
       function done(msg) {
         clear();
         panel.querySelector('.quiz-count').textContent = 'Szülinapi kvíz · kész';
-        panel.querySelector('.quiz-q').textContent = 'Eredmény: 4/4. Jutalom: semmi.';
+        panel.querySelector('.quiz-q').textContent = 'Eredmény: ' + Q.length + '/' + Q.length + '. Jutalom: semmi.';
         panel.querySelector('.quiz-msg').textContent = msg || '';
         var btn = RG.ui.make('button', 'mg-btn', 'Tovább');
         btn.type = 'button';

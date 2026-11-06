@@ -112,7 +112,7 @@
       jump(780, { keep: true });     // Rólunk (leszakad)
       hopTo(905);                    // Almenü
       jump(1050);                    // Kapcsolat
-      jump(1180);                    // padló
+      hopTo(1240);                   // nagy ugrás a kiugró tüske fölött
       go(1345, { keep: true });      // kiváltja a lehulló képet
       for (var i = 0; i < 26; i++) tick(dirInput(-1));
       waitUntil(function () { return G.ents.some(function (e) { return e.landed; }); }, 200, 'kép földet ér');
@@ -225,10 +225,9 @@
       go(2010, { keep: true });
       jump(2060, { keep: true });    // Név
       jump(2190, { keep: true });    // Cím
-      hopTo(2340);                   // Ez jó
-      hopTo(2490);                   // Megjegyzés
-      go(2570);
-      jump(2660);
+      hopTo(2340);                   // Ez jó (leszakad)
+      hopTo(2490);                   // Megjegyzés (leszakad)
+      hopTo(2660);
       go(2845);
       jump(2960);                    // kiugró tüske
       var carts = G.ents.filter(function (e) { return e.cls.indexOf('s-cart') >= 0; });
@@ -274,8 +273,7 @@
       waitUntil(function () { return mover.y > 780; }, 300, 'mozgó lent');
       hopTo(620);
       if (p.ground !== mover) fail('nem a mozgó buborékon');
-      waitUntil(function () { return mover.y < 712; }, 300, 'mozgó fent');
-      waitBell(bell[2], 150, 800);
+      waitUntil(function () { return mover.y < 712 && mover.dir < 0 && bellAway(bell[2]); }, 1500, 'mozgó fent, csengő távol');
       hopTo(720, 660);
       waitBell(bell[2], 150, 800);
       hopTo(520, 580);
@@ -356,6 +354,8 @@
       opt(2).click();
       opt(2).click();                // 5
       opt(1).click();                // élvezed? nem
+      opt(2).click();                // halálok száma
+      opt(1).click();                // a zöld színű gomb (amire Piros van írva)
       var btn = document.querySelector('.quiz-panel .mg-btn');
       if (!btn) fail('Kvíz nem ért véget');
       btn.click();
@@ -413,7 +413,7 @@
 
     // Minijáték: kő-papír-olló
     function () {
-      for (var i = 0; i < 10 && !document.querySelector('.rps-panel .mg-btn'); i++) {
+      for (var i = 0; i < 16 && !document.querySelector('.rps-panel .mg-btn'); i++) {
         document.querySelectorAll('.rps-move')[i % 3].click();
       }
       var btn = document.querySelector('.rps-panel .mg-btn');
@@ -521,11 +521,13 @@
     }
   }
 
+  function bellAway(bell) {
+    var d = bell.x - G.player.x, away = (d > 0 && bell.dir > 0) || (d < 0 && bell.dir < 0);
+    return Math.abs(d) > 450 || (Math.abs(d) > 90 && away);
+  }
+
   function waitBell(bell, minDist, max) {
-    waitUntil(function () {
-      var d = bell.x - G.player.x, away = (d > 0 && bell.dir > 0) || (d < 0 && bell.dir < 0);
-      return Math.abs(d) > 450 || (Math.abs(d) > 90 && away);
-    }, max || 300, 'csengő távol');
+    waitUntil(function () { return bellAway(bell); }, max || 300, 'csengő távol');
   }
 
   RG.test = {

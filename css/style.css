@@ -476,3 +476,9 @@ body.rec #rec { display: block; }
 .modal .sc-check { padding: 12px; border-radius: 8px; background: #5865f2; color: #fff; font: 800 16px system-ui, sans-serif; }
 .shake-x { animation: shakex .35s ease-in-out; }
 @keyframes shakex { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+/* ---------- kvíz: színes gombok ---------- */
+.quiz-opt.c-red { background: #e5383b; color: #fff; }
+.quiz-opt.c-green { background: #2fbf71; color: #fff; }
+.quiz-opt.c-yellow { background: #ffd23f; color: #2b1840; }
+.quiz-opt.c-blue { background: #3a86ff; color: #fff; }

@@ -3,7 +3,7 @@
   'use strict';
   var E = RG.E;
 
-  var DEADLINE = 24 * 60;
+  var DEADLINE = 20 * 60;
 
   function grade(x, mark) {
     var o = { cls: 'g-cell g' + mark, html: mark };

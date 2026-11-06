@@ -26,7 +26,7 @@
         row.appendChild(c);
       }
       RG.ui.addOverlay(panel);
-      var st = this.st = { panel: panel, timer: 70, gap: 70, done: false };
+      var st = this.st = { panel: panel, timer: 45, gap: 45, done: false };
 
       function onCandle(e) {
         var c = e.currentTarget;
@@ -58,7 +58,7 @@
         st.panel.querySelector('.mg-msg').textContent = ['Trükkös gyertya!', 'Visszagyulladt. Hupsz.', 'Ez ilyen fajta.', 'Fújj erősebben!'][Math.floor(Math.random() * 4)];
         RG.ui.sfx('trap');
       }
-      st.gap += 12;
+      st.gap += 8;
       st.timer = st.gap;
     }
   });

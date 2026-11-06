@@ -34,7 +34,7 @@
         E.block(1160, 460, 520, 80, { cls: 'k-floor' }),
         E.fake(1680, 460, 60, 80, { cls: 'k-floor' }),
         E.block(1740, 460, 220, 80, { cls: 'k-floor' }),
-        E.checkpoint('l1a', 1190, 460),
+        E.popspike(1180, 460, { trigger: [1150, 1220] }),
         E.dropper(1400, 110, 120, 80, {
           cls: 'k-image', html: '🖼️<small>szulinap.jpg</small>',
           trigger: [1340, 1540], solidAfter: true

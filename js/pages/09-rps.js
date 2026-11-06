@@ -16,10 +16,12 @@
     'Megint vesztettél.',
     'A szerver nem csal. Valószínűleg.',
     'Négy null. Ez már kínos.',
+    'Öt null. A szerver unatkozik.',
+    'Hat null. Szólni kéne valakinek.',
     'Szerencse.',
     'Na jó, ez is szerencse.'
   ];
-  var WINS_NEEDED = 3;
+  var WINS_NEEDED = 4;
 
   RG.levels.push({
     id: 'rps', url: 'ko-papir-ollo', theme: 'rps', w: 960, h: 540,
@@ -53,8 +55,8 @@
 
       function play(k) {
         if (finished) return;
-        // Az első négy körben a szerver mindig nyer, utána "elfárad".
-        var serverWins = round < 4;
+        // Az első hat körben a szerver mindig nyer, utána "elfárad".
+        var serverWins = round < 6;
         var s = serverWins ? beats(k) : losesTo(k);
         round++;
         if (serverWins) server++; else you++;

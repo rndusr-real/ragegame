@@ -24,8 +24,8 @@
       update: function (G, e) {
         e.dx = 0;
         if (G.player.ground === e) {
-          e.dx = 2;
-          e.x += 2;
+          e.dx = 2.6;
+          e.x += 2.6;
           var i = Math.min(STEPS.length - 1, Math.floor((e.x - start) / (endX - start) * STEPS.length));
           if (e.label !== i) { e.label = i; e.el.textContent = STEPS[i]; }
           if (e.x >= endX) {
@@ -74,7 +74,6 @@
         E.spike(1150, 436, 30, 24),
 
         // Holdgravitáció, tüskés plafon alatt
-        E.checkpoint('l5a', 1200, 460),
         row(1240, 'Gravitáció: holdi', 'grav'),
         E.zone(1300, function (G) {
           G.mods.gravity = 0.22;
